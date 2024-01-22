@@ -13,12 +13,19 @@ class Program
     // variables for concurrency?
     // add the variables you need for concurrency here in case of need
 
+    public static Semaphore OrdersSemaphore = new Semaphore(0, 500);
+    public static readonly object OrdersLock = new object();
 
+    public static Semaphore PickupsSemaphore = new Semaphore(0, 500);
+    public static readonly object PickupsLock = new object();
+    
+    public static List<Thread> ClientThreads = new ();
+    public static List<Thread> CookThreads = new ();
 
     // do not add more variables after this comment.
     // feel free to change the values of the variables below to test your code
-    private static readonly int total_clients = 500; // this needs to be the same as the number of cooks
-    private static int total_coocks = 500; // this needs to be the same as the number of clients
+    private static readonly int total_clients = 15000; // this needs to be the same as the number of cooks
+    private static int total_coocks = 15000; // this needs to be the same as the number of clients
 
     // do not change the code below
     public static LinkedList<Order> orders = new();
@@ -42,7 +49,15 @@ class Program
         // DO NOT CHANGE THE CODE ABOVE
         // use the space below to add your code if needed
 
+        foreach (var t in CookThreads)
+        {
+            t.Join();
+        }
 
+        foreach (var t in ClientThreads)
+        {
+            t.Join();
+        }
 
         // DO NOT CHANGE THE CODE BELOW
         // print the number of orders placed and the number of orders consumed left in the lists
